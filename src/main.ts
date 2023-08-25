@@ -1,7 +1,7 @@
 // 引入vant样式
 import 'vant/lib/index.css'
 // 引入公共样式
-import './styles/main.scss'
+import './styles/main.css'
 
 import { createApp } from 'vue'
 import pinia from '@/stores/index'
