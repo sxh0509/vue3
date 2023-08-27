@@ -2,19 +2,27 @@
 import { useRouter, useRoute } from 'vue-router'
 import { ref, reactive, computed, watch } from 'vue'
 import { mobileRules, passwordRules } from '@/utils/rules'
+import { showToast } from 'vant'
+import { loginApi } from '@/services/user'
 const router = useRouter()
 const route = useRoute()
 // 协议状态
 const agree = ref<boolean>(false)
 const rulForm = reactive({
-  mobile: '',
+  mobile: '13230000001',
   password: ''
 })
 //密码状态
 const show = ref<boolean>(false)
-const onSubmit = (values: any) => {
+//登录
+const onSubmit = () => {
   console.log(rulForm.mobile, rulForm.password)
-
+  console.log(agree)
+  if (!agree.value) return showToast('请勾选我已同意')
+  loginApi(rulForm).then((res) => {
+    console.log(res)
+    localStorage.setItem('token', res.data.token)
+  })
   // console.log('submit', values)
   // console.log(rulForm.mobile, rulForm.password)
 }
@@ -24,11 +32,7 @@ const props = defineProps({})
 <template>
   <div class="login-page">
     <!-- 头部组件 -->
-    <cp-nav-bar
-      title="登录"
-      right-text="注册"
-      @click-right="$router.push('/register')"
-    ></cp-nav-bar>
+    <cp-nav-bar right-text="注册" @click-right="$router.push('/register')"></cp-nav-bar>
     <div class="login-head">
       <h3>密码登录</h3>
       <a href="">
