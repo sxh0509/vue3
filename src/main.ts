@@ -9,9 +9,8 @@ import pinia from '@/stores/index'
 import App from './App.vue'
 import router from './router'
 // console.log('router', router.currentRoute)
-
+import 'virtual:svg-icons-register'
 const app = createApp(App)
-
 app.use(router)
 app.use(pinia)
 

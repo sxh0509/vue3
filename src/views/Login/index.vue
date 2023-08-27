@@ -10,6 +10,8 @@ const rulForm = reactive({
   mobile: '',
   password: ''
 })
+//密码状态
+const show = ref<boolean>(false)
 const onSubmit = (values: any) => {
   console.log(rulForm.mobile, rulForm.password)
 
@@ -22,7 +24,11 @@ const props = defineProps({})
 <template>
   <div class="login-page">
     <!-- 头部组件 -->
-    <cp-nav-bar></cp-nav-bar>
+    <cp-nav-bar
+      title="登录"
+      right-text="注册"
+      @click-right="$router.push('/register')"
+    ></cp-nav-bar>
     <div class="login-head">
       <h3>密码登录</h3>
       <a href="">
@@ -33,7 +39,17 @@ const props = defineProps({})
     <!-- 表单区域 -->
     <van-form @submit="onSubmit" autocomplete="off">
       <van-field v-model="rulForm.mobile" placeholder="请输入手机号" :rules="mobileRules" />
-      <van-field v-model="rulForm.password" placeholder="请输入密码" :rules="passwordRules" />
+      <van-field
+        v-model="rulForm.password"
+        placeholder="请输入密码"
+        :rules="passwordRules"
+        :type="show ? 'text' : 'password'"
+        ><template #button>
+          <cp-icons
+            :name="`login-eye-${show ? 'on' : 'off'}`"
+            @click="show = !show"
+          ></cp-icons> </template
+      ></van-field>
       <div class="cp-cell">
         <van-checkbox v-model="agree" icon-size="16px">
           <span> 我已同意 </span>
@@ -70,6 +86,9 @@ const props = defineProps({})
     justify-content: space-between;
     align-items: flex-end;
     line-height: 1;
+    margin-top: 60px;
+    margin-bottom: 20px;
+    font-weight: 600;
 
     h3 {
       font-weight: 500;
