@@ -1,30 +1,54 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
 import { ref, reactive, computed, watch } from 'vue'
-import { mobileRules, passwordRules } from '@/utils/rules'
-import { showToast } from 'vant'
-import { loginApi } from '@/services/user'
+import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
+import { showToast, type FormInstance } from 'vant'
+import { loginApi, codeApi } from '@/services/user'
+import { useUserStore } from '@/stores/user'
+const form = ref<FormInstance>()
 const router = useRouter()
 const route = useRoute()
+const iscode = ref(true) //切换验证码登录
+const time = ref(0)
+let timeId: number
 // 协议状态
 const agree = ref<boolean>(false)
+const code = ref('')
 const rulForm = reactive({
   mobile: '13230000001',
   password: ''
 })
 //密码状态
 const show = ref<boolean>(false)
-//登录
+//密码登录
 const onSubmit = () => {
   console.log(rulForm.mobile, rulForm.password)
   console.log(agree)
   if (!agree.value) return showToast('请勾选我已同意')
   loginApi(rulForm).then((res) => {
     console.log(res)
-    localStorage.setItem('token', res.data.token)
+    localStorage.setItem('token', JSON.stringify(res.data))
+    showToast('登录成功')
   })
   // console.log('submit', values)
   // console.log(rulForm.mobile, rulForm.password)
+}
+//发送验证码
+const send = () => {
+  //倒计时>0不能发送验证码
+  if (time.value > 0) return
+  //验证码不通过阻止程序执行
+  // await form.value?.validate('mobile')
+  codeApi({ mobile: rulForm.mobile }).then((res) => {
+    console.log(res)
+  })
+  time.value = 60
+  //倒计时
+  clearInterval(timeId)
+  timeId = setInterval(() => {
+    time.value--
+    if (time.value <= 0) clearInterval(timeId)
+  }, 1000)
 }
 // 父传子
 const props = defineProps({})
@@ -34,16 +58,23 @@ const props = defineProps({})
     <!-- 头部组件 -->
     <cp-nav-bar right-text="注册" @click-right="$router.push('/register')"></cp-nav-bar>
     <div class="login-head">
-      <h3>密码登录</h3>
-      <a href="">
-        <span>短信验证码登录</span>
+      <h3>{{ iscode ? '密码登录' : '短信验证码登录' }}</h3>
+      <a href="javascript:;">
+        <span @click="iscode = !iscode">{{ !iscode ? '密码登录' : '短信验证码登录' }}</span>
         <van-icon name="arrow" />
       </a>
     </div>
     <!-- 表单区域 -->
     <van-form @submit="onSubmit" autocomplete="off">
-      <van-field v-model="rulForm.mobile" placeholder="请输入手机号" :rules="mobileRules" />
       <van-field
+        name="mobile"
+        v-model="rulForm.mobile"
+        placeholder="请输入手机号"
+        type="tel"
+        :rules="mobileRules"
+      />
+      <van-field
+        v-if="iscode"
         v-model="rulForm.password"
         placeholder="请输入密码"
         :rules="passwordRules"
@@ -54,6 +85,14 @@ const props = defineProps({})
             @click="show = !show"
           ></cp-icons> </template
       ></van-field>
+      <!-- 切换短信验证码登录 -->
+      <van-field v-else v-model="code" :rules="codeRules" placeholder="短信验证码" type="text">
+        <template #button>
+          <span class="btn-send" :class="{ active: time > 0 }" @click="send">{{
+            time > 0 ? `${time}s后再次发送` : '发送验证码'
+          }}</span>
+        </template>
+      </van-field>
       <div class="cp-cell">
         <van-checkbox v-model="agree" icon-size="16px">
           <span> 我已同意 </span>
@@ -146,6 +185,14 @@ const props = defineProps({})
         color: var(--cp-primary);
       }
     }
+  }
+}
+
+.btn-send {
+  color: var(--cp-primary);
+
+  &.active {
+    color: rgba(22, 194, 163, 0.5);
   }
 }
 </style>

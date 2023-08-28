@@ -7,3 +7,4 @@ export type User =
       avatar: string
     }
   | undefined
+export type CodeType = 'login' | 'register' | 'changeMobile' | 'forgetPassword' | 'bindMobile'

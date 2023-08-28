@@ -1,10 +1,16 @@
-//表单验证
+//手机号验证
 const mobileRules = [
   { required: true, message: '请输入手机号' },
   { pattern: /^1[3-9]\d{9}$/, message: '⼿机号格式不正确' }
 ]
+//密码验证
 const passwordRules = [
   { required: true, message: '请输入密码' },
   { pattern: /^\w{8,24}$/, message: '密码需8-24个字符' }
 ]
-export { mobileRules, passwordRules }
+//验证码验证
+const codeRules = [
+  { required: true, message: '请输⼊验证码' },
+  { pattern: /^\d{6}$/, message: '验证码6个数字' }
+]
+export { mobileRules, passwordRules, codeRules }
