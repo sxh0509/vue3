@@ -5,6 +5,7 @@ import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
 import { showToast, type FormInstance } from 'vant'
 import { loginApi, codeApi } from '@/services/user'
 import { useUserStore } from '@/stores/user'
+const store = useUserStore()
 const form = ref<FormInstance>()
 const router = useRouter()
 const route = useRoute()
@@ -28,7 +29,9 @@ const onSubmit = () => {
   loginApi(rulForm).then((res) => {
     console.log(res)
     localStorage.setItem('token', JSON.stringify(res.data))
+    store.setUser(res.data)
     showToast('登录成功')
+    router.push('/user')
   })
   // console.log('submit', values)
   // console.log(rulForm.mobile, rulForm.password)
@@ -39,7 +42,7 @@ const send = () => {
   if (time.value > 0) return
   //验证码不通过阻止程序执行
   // await form.value?.validate('mobile')
-  codeApi({ mobile: rulForm.mobile }).then((res) => {
+  codeApi({ mobile: rulForm.mobile, type: 'login' }).then((res) => {
     console.log(res)
   })
   time.value = 60

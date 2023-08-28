@@ -15,5 +15,6 @@ app.use(router)
 app.use(pinia)
 
 app.mount('#app')
-
+// 引入权限文件
+import './permission'
 // console.log(import.meta.env)

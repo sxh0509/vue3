@@ -16,6 +16,51 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: () => import('../views/register/index.vue')
+    },
+    {
+      path: '/',
+      name: 'layout',
+      component: () => import('../views/Layout/index.vue'),
+      redirect: '/home',
+      children: [
+        {
+          path: '/home',
+          name: 'home',
+          component: () => import('../views/Home/index.vue'),
+          meta: {
+            title: '首页'
+          }
+        },
+        {
+          path: '/article',
+          name: 'article',
+          component: () => import('../views/Article/index.vue'),
+          meta: {
+            title: '健康百科'
+          }
+        },
+        {
+          path: '/notify',
+          name: 'notify',
+          component: () => import('../views/Notify/index.vue'),
+          meta: {
+            title: '消息中心'
+          }
+        },
+        {
+          path: '/user',
+          name: 'user',
+          component: () => import('../views/User/index.vue'),
+          meta: {
+            title: '我的'
+          }
+        }
+      ]
+    },
+    {
+      path: '/user/patient',
+      component: () => import('../views/User/patient.vue'),
+      meta: { title: '家庭档案' }
     }
   ]
 })

@@ -10,6 +10,7 @@ export const useUserStore = defineStore(
     // 设置用户信息，登录后使用
     const setUser = (u: User) => {
       user.value = u
+      console.log(u)
     }
     // 删除用户信息
     const delUser = () => {
