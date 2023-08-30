@@ -18,11 +18,11 @@ defineProps<{
   title?: string
   rightText?: string
 }>()
-const emit = defineEmits<{
+const emits = defineEmits<{
   (e: 'click-right'): void
 }>()
 const onClickRight = () => {
-  emit('click-right')
+  emits('click-right')
 }
 // 父传子
 </script>

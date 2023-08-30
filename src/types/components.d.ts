@@ -1,8 +1,10 @@
-import CpNavBar from '@/components/CpNavBar.vue'
-import CpIcon from '@/components/CpIcon.vue'
+import cpNavBar from '@/components/cp-nav-bar.vue'
+import cpIcons from '@/components/cp-icons.vue'
+import cpRadioBtn from '@/components/cp-radio-btn.vue'
 declare module 'vue' {
   interface GlobalComponents {
-    CpNavBar: typeof CpNavBar
-    CpIcon: typeof CpIcon
+    cpNavBar: typeof cpNavBar
+    cpIcons: typeof cpIcons
+    cpRadioBtn: typeof cpRadioBtn
   }
 }
