@@ -17,7 +17,7 @@ instance.interceptors.request.use(
     //通过请求头发送token
     const store = useUserStore()
     if (store.user?.token) {
-      console.log(store.user.token)
+      // console.log(store.user.token)
 
       config.headers.Authorization = 'Bearer ' + store.user.token
     }

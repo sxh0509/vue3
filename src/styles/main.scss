@@ -35,3 +35,15 @@ body {
   padding: 0;
   }
 
+.van-tabs{
+  .van-tabs_nav{
+    padding: 0 0 15px 0;
+  }
+  .van-tabs__line{
+    background:var(--cp-primary);
+    width: 20px;
+  }
+}
+#nprogress .bar {
+  background-color: var(--cp-primary) !important;
+  }
