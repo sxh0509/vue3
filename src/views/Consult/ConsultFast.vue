@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
 import { ref, reactive, computed, watch } from 'vue'
+
 import { useConsultStore } from '@/stores/consult'
 const store = useConsultStore()
 const router = useRouter()

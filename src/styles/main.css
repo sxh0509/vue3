@@ -45,3 +45,7 @@ h1, h2, h3, h4, h5, h6, p, ul, ol {
 #nprogress .bar {
   background-color: var(--cp-primary) !important;
 }
+
+.van-toast--text {
+  background: rgba(0, 0, 0, 0.7) !important;
+}

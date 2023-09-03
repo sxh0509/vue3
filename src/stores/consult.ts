@@ -1,5 +1,5 @@
 import { ConsultType } from '@/enums'
-import type { PartialConsult } from '@/types/consult'
+import type { PartialConsult, ConsultIllness } from '@/types/consult'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import persist from 'pinia-plugin-persistedstate'
@@ -12,11 +12,13 @@ export const useConsultStore = defineStore(
     //设置极速问诊类型
     const setIllnessType = (type: 0 | 1) => (consult.value.illnessType = type)
     //设置科室
-    const setDep = (id: string) => (consult.value.depId = id)
+    const setDepId = (depId: string) => {
+      console.log(depId)
+
+      consult.value.depId = depId
+    }
     //设置病情描述
-    const setIllness = (
-      illness: Pick<PartialConsult, 'illnessDesc' | 'illnessTime' | 'consultFlag' | 'pictures'>
-    ) => {
+    const setIllness = (illness: ConsultIllness) => {
       consult.value.illnessDesc = illness.illnessDesc
       consult.value.illnessTime = illness.illnessTime
       consult.value.consultFlag = illness.consultFlag
@@ -28,7 +30,7 @@ export const useConsultStore = defineStore(
     const setCoupon = (id?: string) => (consult.value.couponId = id)
     //清空记录
     const clear = () => (consult.value = {})
-    return { consult, setType, setIllnessType, setDep, setIllness, setPatient, setCoupon, clear }
+    return { consult, setType, setIllnessType, setDepId, setIllness, setPatient, setCoupon, clear }
   },
   { persist: true }
 )

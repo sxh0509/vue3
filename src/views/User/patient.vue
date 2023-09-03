@@ -6,10 +6,12 @@ import type { PatientList, PatientType } from '@/types/user'
 import { showToast } from 'vant'
 import Validator from 'id-validator'
 import { showNotify } from 'vant'
+import { useConsultStore } from '@/stores/consult'
+const store = useConsultStore()
 const router = useRouter()
 const route = useRoute()
 const data = reactive({})
-
+const isChange = computed(() => route.query.isChange === '1')
 const showRight = ref<boolean>(false)
 //打开弹出层
 const add = (item?: PatientType) => {
@@ -32,6 +34,11 @@ const huoList = () => {
   getPatientApi({}).then((res) => {
     console.log(res)
     cardList.value = res.data
+    if (isChange.value && cardList.value?.length) {
+      const defPatient = cardList.value.find((item) => item.defaultFlag === 1)
+      if (defPatient) patientId.value = defPatient.id
+      else patientId.value = cardList.value[0].id
+    }
   })
 }
 huoList()
@@ -73,12 +80,36 @@ const submit = async () => {
   huoList()
   showNotify(patient.value.id ? '编辑成功' : '添加成功')
 }
+//点击选中效果
+const patientId = ref<string>('')
+const selectedPatient = (item: any) => {
+  if (isChange.value) {
+    patientId.value = item.id
+  }
+}
+//选择就诊患者
+const next = async () => {
+  if (!patientId.value) return showToast('请选就诊择患者')
+  store.setPatient(patientId.value)
+  router.push('/consult/pay')
+}
 </script>
 <template>
   <div class="patient-page">
-    <cp-nav-bar title="家庭档案"></cp-nav-bar>
+    <cp-nav-bar :title="isChange ? '选择患者' : '家庭档案'"></cp-nav-bar>
+    <!-- 头部提示 -->
+    <div class="patient-change" v-if="isChange">
+      <h3>请选择患者信息</h3>
+      <p>以便医⽣给出更准确的治疗，信息仅医⽣可⻅</p>
+    </div>
     <div class="patient-list">
-      <div class="patient-item" v-for="(item, index) in cardList" :key="index">
+      <div
+        class="patient-item"
+        v-for="(item, index) in cardList"
+        :key="index"
+        @click="selectedPatient(item)"
+        :class="{ selected: patientId === item.id }"
+      >
         <div class="info">
           <span class="name" style="font-weight: 800">{{ item.name }}</span>
           <span class="id" style="margin-left: 16px">{{
@@ -97,6 +128,10 @@ const submit = async () => {
         <p>添加患者</p>
       </div>
       <div class="patient-tip">最多可添加 6 ⼈</div>
+      <!-- 底部按钮 -->
+      <div class="patient-next" v-if="isChange">
+        <van-button type="primary" @click="next" round block>下⼀步</van-button>
+      </div>
     </div>
     <!-- 弹出框 添加患者 -->
     <van-popup
@@ -150,6 +185,10 @@ const submit = async () => {
       border: 1px solid var(--cp-bg);
       transition: all 0.3s;
       overflow: hidden;
+      &.selected {
+        border-color: var(--cp-primary);
+        background-color: var(--cp-plain);
+      }
 
       .info {
         display: flex;
@@ -228,5 +267,25 @@ const submit = async () => {
 
 .van-form {
   margin-top: 50px;
+}
+.patient-change {
+  padding: 15px;
+  > h3 {
+    font-weight: normal;
+    margin-bottom: 5px;
+  }
+  > p {
+    color: var(--cp-text3);
+  }
+}
+.patient-next {
+  padding: 15px;
+  background-color: #fff;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 80px;
+  box-sizing: border-box;
 }
 </style>

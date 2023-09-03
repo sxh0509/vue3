@@ -144,3 +144,38 @@ export type Consult = {
 // 问诊记录-全部可选
 export type PartialConsult = Partial<Consult>
 // Required 转换为全部必须 Partial 转换问全部可选 两个内置的泛型类型
+
+//科室
+export type SubDep = {
+  //科室id
+  id: String
+  //科室名称
+  name: string
+}
+export type TopDep = SubDep & {
+  //二级科室数组
+  child: SubDep[]
+}
+
+export type DepList = TopDep[]
+
+//表单数据
+export type ConsultIllness = Pick<
+  PartialConsult,
+  'illnessDesc' | 'illnessTime' | 'consultFlag' | 'pictures'
+>
+// 问诊订单预⽀付传参
+export type ConsultOrderPreParams = Pick<PartialConsult, 'type' | 'illnessType'>
+// 问诊订单预⽀付信息
+export type ConsultOrderPreData = {
+  // 积分抵扣
+  pointDeduction: number
+  // 优惠券抵扣
+  couponDeduction: number
+  // 优惠券ID
+  couponId: string
+  // 需付款
+  payment: number
+  // 实付款
+  actualPayment: number
+}
