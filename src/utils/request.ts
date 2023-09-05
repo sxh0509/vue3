@@ -52,7 +52,7 @@ instance.interceptors.response.use(
   }
 )
 
-const request = (url: string, method: Method, submitData?: object) => {
+export const requests = (url: string, method: Method, submitData?: object) => {
   return instance({
     url,
     method,
