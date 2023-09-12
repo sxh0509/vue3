@@ -9,7 +9,9 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    vue(),
+    vue({
+      reactivityTransform: true
+    }),
     Components({
       dts: false,
       resolvers: [VantResolver()]

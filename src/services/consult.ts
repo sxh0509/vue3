@@ -7,7 +7,8 @@ import type {
   PartialConsult,
   ConsultOrderListParams,
   ConsultOrderPage,
-  ConsultOrderItem
+  ConsultOrderItem,
+  FollowType
 } from '@/types/consult'
 import { OrderType } from '@/enums'
 //首页 查询推荐/减脂/饮食健康...
@@ -54,3 +55,7 @@ export const getPrescriptionPic = (id: string | number) => {
 export const getConsultOrderDetail = (orderId: string) => {
   return requests('/patient/consult/order/detail', 'GET', { orderId })
 }
+
+//关注
+export const followOrUnfollow = (id: string, type: FollowType = 'doc') =>
+  requests('/like', 'POST', { id, type })

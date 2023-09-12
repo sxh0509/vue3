@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch, onUnmounted } from 'vue'
 import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
 import { showToast, type FormInstance } from 'vant'
-import { loginApi, codeApi } from '@/services/user'
+import { loginApi, codeApi, loginByMobile } from '@/services/user'
 import { useUserStore } from '@/stores/user'
 const store = useUserStore()
 const form = ref<FormInstance>()
@@ -55,6 +55,9 @@ const send = () => {
 }
 // 父传子
 const props = defineProps({})
+onUnmounted(() => {
+  window.clearInterval(timeId)
+})
 </script>
 <template>
   <div class="login-page">

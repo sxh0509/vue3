@@ -5,7 +5,7 @@ import { OrderType } from '@/enums'
 import { computed, ref } from 'vue'
 import { cancelOrder, deleteOrder } from '@/services/consult'
 import { showToast } from 'vant'
-import { useShowPrescription, useDeleteOrder, useCancelOrder } from '@/composable'
+import { useShowPrescription, useDeleteOrder, useCancelOrder } from '@/composable/index'
 import CpConsultMore from './cp-consult-more.vue'
 
 const emits = defineEmits<{
@@ -65,6 +65,9 @@ const { deleteLoading, handleDeleteOrder } = useDeleteOrder((id) => {
   emits('on-delete', id)
 })
 const { showPrescription } = useShowPrescription()
+// const showPrescription = (value: any) => {
+//   console.log(value)
+// }
 </script>
 <template>
   <div class="consult-item">
@@ -131,7 +134,7 @@ const { showPrescription } = useShowPrescription()
         plain
         size="small"
         round
-        @click="showPrescription(item.prescription?.id)"
+        @click="showPrescription(item.prescriptionId)"
         >查看处方</van-button
       >
       <van-button type="primary" plain size="small" round :to="`/room?orderId=${item.id}`"

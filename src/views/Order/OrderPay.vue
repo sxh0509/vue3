@@ -30,6 +30,7 @@ const onSubmit = async () => {
   medicalOrderId.value = orderRes.data.id
 
   console.log('orderRes', orderRes)
+  // window.location.href = orderRes.data.payUrl
 }
 const onClose = () => {
   return showConfirmDialog({
@@ -43,7 +44,7 @@ const onClose = () => {
       return false
     })
     .catch((error) => {
-      router.push('/user/consult')
+      // router.push('/user/consult')
       return true
     })
 }

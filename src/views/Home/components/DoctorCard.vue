@@ -2,10 +2,22 @@
 import { useRouter, useRoute } from 'vue-router'
 import { ref, reactive, computed, watch } from 'vue'
 import type { Doctor } from '@/types/consult'
+import { followOrUnfollow } from '@/services/consult'
+import loading from 'vant/lib/loading'
 const router = useRouter()
 const route = useRoute()
 const data = reactive({})
 defineProps<{ item: Doctor }>()
+//关注
+const follow = async (item: Doctor) => {
+  loading.value = true
+  try {
+    await followOrUnfollow(item.id)
+    item.likeFlag = item.likeFlag === 1 ? 0 : 1
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 <template>
   <div class="doctor-card">
@@ -13,7 +25,7 @@ defineProps<{ item: Doctor }>()
     <p class="name">{{ item.name }}</p>
     <p class="van-ellipsis">{{ item.hospitalName }} {{ item.depName }}</p>
     <p>{{ item.positionalTitles }}</p>
-    <van-button round size="small" type="primary">
+    <van-button round size="small" type="primary" @click="follow(item)">
       {{ item.likeFlag === 1 ? '已关注' : '+ 关注' }}
     </van-button>
   </div>

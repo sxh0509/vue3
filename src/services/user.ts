@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request, { requests } from '@/utils/request'
 import type { CodeType, User, PatientType } from '@/types/user'
 import type { CodeTypeRules } from './types/user.d'
 import type { UserInfo } from '@/types/user'
@@ -20,3 +20,6 @@ export const editApi = (patient: PatientType) => {
 }
 // 查询患者详情
 export const getPatientDetail = (id: string) => request.get(`/patient/info/${id}`)
+//短信登录
+export const loginByMobile = (mobile: string, code: string) =>
+  requests('/login', 'POST', { mobile, code })

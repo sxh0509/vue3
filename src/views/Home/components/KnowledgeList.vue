@@ -28,7 +28,7 @@ const initConsultList = async () => {
   const consultRes = await getConsultList(consultParams.value)
   consultData.value = consultRes.data
   // list.value = consultData.value.rows
-  list.value.push(...consultData.value.rows)
+  list.value.push(...consultData.value!.rows)
 }
 
 const onLoad = async () => {

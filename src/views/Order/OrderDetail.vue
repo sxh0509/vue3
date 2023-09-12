@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
+import { useMedicineOrderDetail } from '@/composable'
+import { useRoute } from 'vue-router'
 import OrderMedical from './components/OrderMedical.vue'
+import { OrderType } from '@/enums/index'
 const route = useRoute()
-const router = useRouter()
-const add = () => {
-  console.log(1)
-  router.push('/order/logistics/:id')
-}
+const { item } = useMedicineOrderDetail(route.params.id as string)
+console.log(item)
+const add = () => {}
 </script>
 <template>
-  <div class="order-detail-page">
+  <div class="order-detail-page" v-if="item">
     <cp-nav-bar title="药品订单详情" />
     <div class="order-head">
-      <div class="card" @click="add">
+      <div class="card" @click="$router.push(`/order/logistics/${item.id}`)">
         <div class="logistics">
-          <p>【东莞市】您的包裹已由物流公司揽收</p>
-          <p>2019-07-14 17:42:12</p>
+          <p>{{ item?.expressInfo?.content }}</p>
+          <p>{{ item?.expressInfo?.time }}</p>
         </div>
         <van-icon name="arrow" />
       </div>
     </div>
-    <div class="order-medical">
+    <!-- <div class="order-medical">
       <div class="head">
         <h3>优医药房</h3>
         <small>优医质保 假⼀赔⼗</small>
@@ -40,44 +40,52 @@ const add = () => {
         </div>
         <div class="desc">⽤法⽤量：⼝服，每次1袋，每天3次，⽤药3天</div>
       </div>
-    </div>
+    </div> -->
+    <OrderMedical :medicineInfo="item"></OrderMedical>
     <div class="order-detail">
       <van-cell-group>
-        <van-cell title="药品⾦额" value="￥50" />
-        <van-cell title="运费" value="￥4" />
-        <van-cell title="优惠券" value="-￥0" />
-        <van-cell title="实付款" value="￥54" class="price" />
-        <van-cell title="订单编号" value="202201127465" />
-        <van-cell title="创建时间" value="2022-01-23 09:23:46" />
-        <van-cell title="⽀付时间" value="2022-01-23 09:23:46" />
-        <van-cell title="⽀付⽅式" value="⽀付宝⽀付" />
+        <van-cell title="药品金额" :value="`￥${item.payment}`" />
+        <van-cell title="运费" :value="`￥${item.expressFee}`" />
+        <van-cell title="优惠券" :value="`-￥${item.couponDeduction}`" />
+        <van-cell title="实付款" :value="`￥${item.actualPayment}`" />
+        <van-cell title="订单编号" :value="item.orderNo" />
+        <van-cell title="创建时间" :value="item.createTime" />
       </van-cell-group>
     </div>
     <!-- 已取消 -->
-    <!-- <van-action-bar>
-  <van-action-bar-icon icon="delete-o" text="删除" />
-  <van-action-bar-button type="primary" text="沟通记录" />
-  </van-action-bar> -->
+    <van-action-bar v-if="item.status === OrderType.MedicineCancel">
+      <van-action-bar-icon icon="delete-o" text="删除" />
+      <van-action-bar-button type="primary" text="沟通记录" />
+    </van-action-bar>
     <!-- 待收货 -->
-    <van-action-bar>
+    <van-action-bar v-if="item.status === OrderType.MedicineTake">
       <van-action-bar-button type="primary" text="确认收货" />
     </van-action-bar>
     <!-- 待发货 -->
-    <!-- <van-action-bar>
-  <van-action-bar-button type="primary" text="提醒发货" />
-  </van-action-bar> -->
-    <!-- 待⽀付 -->
-    <!-- <van-action-bar>
-  <p class="price">需要⽀付：<span>￥60</span></p>
-  <van-action-bar-button color="#bbb" text="取消问诊" />
-  <van-action-bar-button type="primary" text="继续⽀付" />
-  </van-action-bar> -->
+    <van-action-bar v-if="item.status === OrderType.MedicineSend">
+      <van-action-bar-button type="primary" text="提醒发货" />
+    </van-action-bar>
+    <!-- 待支付 -->
+    <van-action-bar v-if="item.status === OrderType.MedicinePay">
+      <p class="price">
+        需要支付：<span>￥ {{ item.actualPayment }}</span>
+      </p>
+      <van-action-bar-button color="#bbb" text="取消问诊" />
+      <van-action-bar-button type="primary" text="继续支付" />
+    </van-action-bar>
     <!-- 已完成 -->
-    <!-- <van-action-bar>
-  <van-action-bar-icon icon="delete-o" text="删除" />
-  <van-action-bar-button type="primary" text="再次购买" />
-  </van-action-bar> -->
+    <van-action-bar v-if="item.status === OrderType.MedicineComplete">
+      <van-action-bar-icon icon="delete-o" text="删除" />
+      <van-action-bar-button type="primary" text="再次购买" />
+    </van-action-bar>
   </div>
+
+  <!-- <div class="order-pay-page" v-else>
+    <cp-nav-bar title="药品支付" />
+    <van-skeleton title avatar row="2" style="margin-top: 15px" />
+    <van-skeleton title row="4" style="margin-top: 50px" />
+    <van-skeleton title row="4" style="margin-top: 50px" />
+  </div> -->
 </template>
 
 <style lang="scss" scoped>

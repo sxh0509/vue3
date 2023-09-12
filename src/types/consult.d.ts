@@ -99,7 +99,8 @@ export type DoctorPage = {
   total: number
   rows: DoctorList
 }
-
+// 关注的类型，医⽣|⽂章|百科话题|疾病
+export type FollowType = 'doc' | 'knowledge' | 'topic' | 'disease'
 export type LikeParams = {
   /**
    * 对应的id
@@ -145,15 +146,16 @@ export type Consult = {
 export type PartialConsult = Partial<Consult>
 // Required 转换为全部必须 Partial 转换问全部可选 两个内置的泛型类型
 
-//科室
+// 科室
 export type SubDep = {
-  //科室id
-  id: String
-  //科室名称
+  // 科室ID
+  id: string
+  // 科室名称
   name: string
 }
+
 export type TopDep = SubDep & {
-  //二级科室数组
+  // 二级科室数组
   child: SubDep[]
 }
 

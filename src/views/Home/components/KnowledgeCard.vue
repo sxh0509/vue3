@@ -2,6 +2,8 @@
 import { useRouter, useRoute } from 'vue-router'
 import { ref, reactive, computed, watch } from 'vue'
 import type { Knowledge } from '@/types/consult'
+import loading from 'vant/lib/loading'
+import { followOrUnfollow } from '@/services/consult'
 const router = useRouter()
 const route = useRoute()
 const data = reactive({})
@@ -11,6 +13,15 @@ const data = reactive({})
 //   item: Knowledge
 // }>
 defineProps<{ item: Knowledge }>()
+const follow = async (item: { id: string; likeFlag: 0 | 1 }) => {
+  loading.value = true
+  try {
+    await followOrUnfollow(item.id)
+    item.likeFlag = item.likeFlag === 1 ? 0 : 1
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 <template>
   <div class="knowledge-card van-hairline--bottom">
@@ -22,7 +33,7 @@ defineProps<{ item: Knowledge }>()
           {{ item.creatorTitles }}{{ item.creatorHospatalName }} {{ item.creatorDep }}
         </p>
       </div>
-      <van-button class="btn" size="mini" round>{{
+      <van-button class="btn" size="mini" round @click="follow(item)">{{
         item.likeFlag === 1 ? '已关注' : '+ 关注'
       }}</van-button>
     </div>

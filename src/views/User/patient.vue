@@ -78,7 +78,7 @@ const submit = async () => {
   patient.value.id ? await editApi(patient.value) : await addApi(patient.value)
   showRight.value = false
   huoList()
-  showNotify(patient.value.id ? '编辑成功' : '添加成功')
+  showToast(patient.value.id ? '编辑成功' : '添加成功')
 }
 //点击选中效果
 const patientId = ref<string>('')

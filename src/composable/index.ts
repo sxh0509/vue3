@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { showImagePreview, showToast } from 'vant'
 import type { ConsultOrderItem } from '@/types/consult'
 import { OrderType } from '@/enums'
+import type { OrderDetailResponseType } from '@/types/order'
+import { getMedicalOrderDetail } from '@/services/order'
 //封装查看处方逻辑
 export const useShowPrescription = () => {
   const showPrescription = async (id?: string) => {
@@ -56,4 +58,15 @@ export const useCancelOrder = () => {
       })
   }
   return { loading, cancelConsultOrder }
+}
+
+// 获取药品订单详情
+export function useMedicineOrderDetail(id: string) {
+  const item = ref<OrderDetailResponseType>()
+  const initMedicineOrderDetail = async () => {
+    const OrderDetailRes = await getMedicalOrderDetail(id)
+    item.value = OrderDetailRes.data
+  }
+  initMedicineOrderDetail()
+  return { item, initMedicineOrderDetail }
 }

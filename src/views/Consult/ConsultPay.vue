@@ -7,7 +7,7 @@ import type { ConsultOrderPreData } from '@/types/consult'
 import { getConsultOrderPre, createConsultOrder, getConsultOrderPayUrl } from '@/services/consult'
 import { showToast } from 'vant'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
-import { Dialog } from 'vant'
+import { Dialog, showConfirmDialog } from 'vant'
 const store = useConsultStore()
 const agree = ref(false)
 const show = ref(false)
@@ -96,23 +96,23 @@ const pay = async () => {
   })
   window.location.href = res.data.payUrl
 }
-// const onClose = () => {
-//   return Dialog.confirm({
-//     title: '关闭⽀付',
-//     message: '取消⽀付将⽆法获得医⽣回复，医⽣接诊名额有限，是否确认关闭？',
-//     cancelButtonText: '仍要关闭',
-//     confirmButtonText: '继续⽀付',
-//     confirmButtonColor: 'var(--cp-primary)'
-//   })
-//     .then(() => {
-//       return false
-//     })
-//     .catch(() => {
-//       orderId.value = ''
-//       router.push('/user/consult')
-//       return true
-//     })
-// }
+const onClose = () => {
+  return showConfirmDialog({
+    title: '关闭⽀付',
+    message: '取消⽀付将⽆法获得医⽣回复，医⽣接诊名额有限，是否确认关闭？',
+    cancelButtonText: '仍要关闭',
+    confirmButtonText: '继续⽀付',
+    confirmButtonColor: 'var(--cp-primary)'
+  })
+    .then((res) => {
+      // on confirm
+      return false
+    })
+    .catch(() => {
+      // on cancel
+      orderId.value = ''
+    })
+}
 </script>
 <template>
   <div class="consult-pay-page">
@@ -154,7 +154,7 @@ const pay = async () => {
       @click="submit"
     />
     <!-- 拉起支付方式 -->
-    <van-action-sheet v-model:show="show" title="选择支付方式">
+    <!-- <van-action-sheet v-model:show="show" title="选择支付方式" :closeable="false">
       <div class="pay-type">
         <p class="amount">￥{{ payInfo?.actualPayment.toFixed(2) }}</p>
         <van-cell-group>
@@ -171,7 +171,14 @@ const pay = async () => {
           <van-button type="primary" round block @click="pay">立即支付</van-button>
         </div>
       </div>
-    </van-action-sheet>
+    </van-action-sheet> -->
+    <cp-pay-sheet
+      v-model:show="show"
+      :orderId="orderId"
+      :actualPayment="payInfo?.actualPayment"
+      :onClose="onClose"
+      payCallback="room"
+    ></cp-pay-sheet>
   </div>
 </template>
 

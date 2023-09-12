@@ -6,7 +6,7 @@ import { getConsultFlagText, getIllnessTimeText } from '@/utils/filter'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import CpConsultMore from '../User/components/cp-consult-more.vue'
-import { useCancelOrder, useDeleteOrder, useShowPrescription } from '@/composable'
+import { useCancelOrder, useDeleteOrder, useShowPrescription } from '@/composable/index'
 import { useClipboard } from '@vueuse/core'
 import { showToast } from 'vant'
 const { showPrescription } = useShowPrescription()
